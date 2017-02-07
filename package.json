@@ -10,7 +10,8 @@
   "dependencies": {
     "crypto": "0.0.3",
     "express": "^4.12.3",
-    "swagger-express-mw": "^0.1.0"
+    "swagger-express-mw": "^0.1.0",
+    "swagger-ui-express": "^1.0.4"
   },
   "devDependencies": {
     "should": "^7.1.0",

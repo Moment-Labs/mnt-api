@@ -1,12 +1,16 @@
 'use strict';
 
 const SwaggerExpress = require('swagger-express-mw');
-const app = require('express')();
+const express = require('express');
+const app = express();
+const path = require('path');
 module.exports = app; // for testing
 
 const config = {
   appRoot: __dirname // required config
 };
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 SwaggerExpress.create(config, function (err, swaggerExpress) {
   if (err){
