@@ -1,13 +1,9 @@
-## API
-To Clone:  
-`git clone https://github.com/Moment-Labs/mnt-api`
+# API Project
+
+### Prerequisites
+1. Install NodeJS and NVM
+2. Make sure you are on Node version 7.0.0 or higher
 
 ### Installation
-1. Install Node (and NPM) and NVM. Use Node v7.2.1;
-2. In `./mnt-api`, run `npm install`
-
-### Running
-1. Set Environment and Run `NODE_ENV=local npm start`
-
-### Migration
-_todo_
+1. Install Swagger `npm install -g swagger`
+2. Install dependencies 'npm install'

@@ -1,35 +1,25 @@
-process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'local' : process.env.NODE_ENV;
+'use strict';
 
-//Libraries
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const errorHandler = require('./helpers/errorHelper')
+const SwaggerExpress = require('swagger-express-mw');
+const app = require('express')();
+module.exports = app; // for testing
 
-const controllers = require('./controllers');
+const config = {
+  appRoot: __dirname // required config
+};
 
-const app = express();
+SwaggerExpress.create(config, function (err, swaggerExpress) {
+  if (err){
+    throw err;
+  }
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+  // install middleware
+  swaggerExpress.register(app);
 
-//TODO: Favicon
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+  const port = process.env.PORT || 10010;
+  app.listen(port);
 
-//Controllers
-app.use(controllers);
-
-//Errors
-app.use(errorHandler.handle404);
-app.use(errorHandler.handleError);
-
-module.exports = app;
+  if (swaggerExpress.runner.swagger.paths['/hello']) {
+    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
+  }
+});
