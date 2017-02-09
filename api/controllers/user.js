@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('../../config/db.js')();
+const models = require('../../models');
 module.exports = {
   query,
   create,
@@ -10,50 +10,118 @@ module.exports = {
 };
 
 function query (req, res, next) {
-  res.json({ users: db.find() })
+  models.User.findAll({}).then((users, err) => {
+    if (!!err) {
+      console.log('User Controller Error:', err);
+      res.status(500).json({
+        message: err
+      }).send();
+    } else {
+      res.json(users)
+    }
+  });
 }
 
 function create (req, res, next) {
-  const success = db.save(req.body);
-  res.json({
-    success: success,
-    description: "Added user successfully"
-  })
+  models.User.create({
+    username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    phone: req.body.phone
+  }).then((user, err) => {
+    if (!!err) {
+      console.log('User Controller Error:', err);
+      res.status(500).json({
+        message: err
+      }).send();
+    } else {
+      res.json({
+        success: 1,
+        description: "User generated successfully"
+      })
+    }
+  });
 }
 
 function get (req, res, next) {
   const id = req.swagger.params.id.value;
-  const user = db.find(id);
-  if (user) {
-    res.json(user)
-  } else {
-    res.status(404).send();
-  }
+  models.User.findOne({
+    id: id
+  }).then((user, err) => {
+    if (!!err){
+      console.log('User Controller Error:', err);
+      res.status(500).json({
+        message: err
+      }).send();
+    } else {
+      res.json({
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      });
+    }
+  });
 }
 
 function update (req, res, next) {
   const id = req.swagger.params.id.value;
-  const user = req.body;
-  const success = db.update(id, user);
-  if (success) {
-    res.json({
-      success: success,
-      description: "User updated"
-    })
-  } else {
-    res.status(204).send();
-  }
+
+  models.User.findOne({
+    id: id
+  }).then((user, err) => {
+    if (!!err) {
+      console.log('User Controller Error:', err);
+      res.status(500).json({
+        message: err
+      }).send();
+    } else {
+      if (!user) {
+        res.status(404).send();
+      } else{
+        let updateAttrs = {};
+        for (const key in req.body) {
+          updateAttrs[key] = req.body[key];
+        };
+
+        user.updateAttributes(updateAttrs)
+          .then((user, err) => {
+            if (!!err) {
+              console.log('User Controller Error:', err);
+              res.status(500).json({
+                message: err
+              }).send();
+            } else {
+              res.json({
+                success: 1,
+                description: "User updated"
+              })
+            }
+          })
+      }
+    }
+  });
 }
 
 function remove (req, res,  next) {
   const id = req.swagger.params.id.value;
-  const success = db.remove(id);
-  if (success) {
-    res.json({
-      success: success,
-      description: "User deleted"
-    })
-  } else {
-    res.status(204).send();
-  }
+  models.User.destroy({
+    where: {
+      id: id
+    }
+  }).then((user, err) => {
+    if (!!err) {
+      res.status(204).send();
+    } else {
+      res.json({
+        success: 1,
+        description: "User deleted"
+      })
+    }
+  });
 }

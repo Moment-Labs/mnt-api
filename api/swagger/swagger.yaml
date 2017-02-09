@@ -114,7 +114,12 @@ paths:
           type: string
           in: path
           required: true
-        
+        - name: props
+          description: User properties
+          in: body
+          required: false
+          schema:
+            $ref: "#/definitions/User"
             
       responses:
         "200":
@@ -166,16 +171,30 @@ definitions:
     type: object
     properties:
       id:
+        type: integer
+      username: 
         type: string
-      first_name:
-        type: string
+      firstName:
+        type: ['string', 'null']
+      lastName:
+        type: ['string', 'null']
       email:
         type: string
-      last_name:
+      phone:
+        type: ['string', 'null']
+      password:
+        type: ['string', 'null']
+      salt: 
+        type: ['string', 'null']
+      createdAt:
         type: string
+      updatedAt:
+        type: string
+      deletedAt:
+        type: ['string', 'null']
+      
     required:
-      - first_name
-      - last_name
+      - username
       - email
   HelloWorldResponse:
     required:
@@ -187,18 +206,29 @@ definitions:
   GetUserResponse:
     required:
       - id
-      - first_name
-      - last_name
-      - email
     properties:
       id:
+        type: integer
+      username: 
         type: string
-      first_name:
-        type: string
+      firstName:
+        type: ['string', 'null']
+      lastName:
+        type: ['string', 'null']
       email:
         type: string
-      last_name:
+      phone:
+        type: ['string', 'null']
+      password:
+        type: ['string', 'null']
+      salt: 
+        type: ['string', 'null']
+      createdAt:
         type: string
+      updatedAt:
+        type: string
+      deletedAt:
+        type: ['string', 'null']
   
   GetUsersResponse:
     required:
@@ -211,13 +241,28 @@ definitions:
           type: object
           properties:
             id:
+              type: integer
+            username: 
               type: string
-            first_name:
-              type: string
+            firstName:
+              type: ['string', 'null']
+            lastName:
+              type: ['string', 'null']
             email:
               type: string
-            last_name:
+            phone:
+              type: ['string', 'null']
+            password:
+              type: ['string', 'null']
+            salt: 
+              type: ['string', 'null']
+            createdAt:
               type: string
+            updatedAt:
+              type: string
+            deletedAt:
+              type: ['string', 'null']
+              
   ErrorResponse:
     required:
       - message

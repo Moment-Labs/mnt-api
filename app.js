@@ -4,6 +4,8 @@ const SwaggerExpress = require('swagger-express-mw');
 const express = require('express');
 const app = express();
 const path = require('path');
+const models = require('./models');
+
 module.exports = app; // for testing
 
 const config = {
@@ -21,9 +23,17 @@ SwaggerExpress.create(config, function (err, swaggerExpress) {
   swaggerExpress.register(app);
 
   const port = process.env.PORT || 10010;
+
+  models.sequelize.sync().then(() => {
+    listen(port, swaggerExpress)
+  });
+});
+
+
+function listen (port, swaggerExpress) {
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
+    console.log('Listening on http://127.0.0.1:' + port);
   }
-});
+}
