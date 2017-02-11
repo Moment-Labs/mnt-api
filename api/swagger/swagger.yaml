@@ -43,6 +43,32 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  
+  /auth:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: auth
+    post:
+      description: Logs the user into a new session
+      # used as the method name of the controller
+      operationId: login
+      parameters:
+        - name: auth
+          description: Auth information
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Auth"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SuccessfulLoginResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /users:
     # our controller name
@@ -66,12 +92,13 @@ paths:
       description: add a new user
       # movie info to be stored
       parameters:
-        - name: first name
-          description: Users first name
+        - name: user
+          description: Users information
           in: body
           required: true
           schema:
             $ref: "#/definitions/User"
+       
       responses:
         "200":
           description: Success
@@ -88,12 +115,18 @@ paths:
     get:
       operationId: get
       description: get a user
-      # define the type of response for Success "200" and Error
       parameters:
         - name: id
           type: string
           in: path
           required: true
+          
+        - name: auth_token
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+              
       responses:
         "200":
           description: Success
@@ -114,6 +147,11 @@ paths:
           type: string
           in: path
           required: true
+        - name: auth_token
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
         - name: props
           description: User properties
           in: body
@@ -141,6 +179,11 @@ paths:
           type: string
           in: path
           required: true
+        - name: auth_token
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -167,6 +210,26 @@ definitions:
     required:
       - success
       - description
+  
+  Token:
+    type: object
+    properties:
+      auth_token:
+        type: string
+    required:
+      - auth_token
+  
+  Auth:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+      - email
+      - password
+  
   User:
     type: object
     properties:
@@ -196,6 +259,7 @@ definitions:
     required:
       - username
       - email
+      
   HelloWorldResponse:
     required:
       - message
@@ -220,7 +284,7 @@ definitions:
       phone:
         type: ['string', 'null']
       password:
-        type: ['string', 'null']
+        type: string
       salt: 
         type: ['string', 'null']
       createdAt:
@@ -253,7 +317,7 @@ definitions:
             phone:
               type: ['string', 'null']
             password:
-              type: ['string', 'null']
+              type: string
             salt: 
               type: ['string', 'null']
             createdAt:
@@ -262,7 +326,14 @@ definitions:
               type: string
             deletedAt:
               type: ['string', 'null']
-              
+  
+  SuccessfulLoginResponse:
+    required:
+      - token
+    properties:
+      token:
+        type: string
+  
   ErrorResponse:
     required:
       - message
