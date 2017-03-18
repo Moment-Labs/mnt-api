@@ -9,9 +9,10 @@ You can use PGAdmin4 to create the database instead of using the provided psql C
 ### Installation
 1. Install Swagger `npm install -g swagger`
 2. Install dependencies `npm install`
-3. Copy the database config (db-default.json) to a new file (db.json) and enter your database information.  
+3. `npm install --save pg pg-hstore`
+4. Copy the database config (db-default.json) to a new file (db.json) and enter your database information.  
 `cp config/db-default.json config/db.json`
-4. Run the latest migrations `node_modules/.bin/sequelize db:migrate`
+5. Run the latest migrations `node_modules/.bin/sequelize db:migrate`
 
 ### Running
 1. Run `swagger project start` to run the server.

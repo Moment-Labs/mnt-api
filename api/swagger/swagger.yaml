@@ -69,7 +69,45 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+  
+  /salesforce_sessions:
+    x-swagger-router-controller: salesforce_session
+    get:
+      operationId: query_sessions
+      description: get all salesforce sessions
+      
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetSalesforceSessionResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        
+    post:
+      operationId: create_session
+      description: Create a new salesforce session
+      
+      parameters:
+        - name: session
+          description: Session information
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/SalesforceSession"
+      
+      responses:
+        "202":
+          description: Success,
+          schema:
+            $ref: "#/definitions/SalesforceSessionResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  
   /users:
     # our controller name
     x-swagger-router-controller: user
@@ -230,6 +268,17 @@ definitions:
       - email
       - password
   
+  SalesforceSession:
+    type: object
+    properties:
+      id:
+        type: integer
+      sf_id:
+        type: ['string', 'null']
+        
+    required:
+      - sf_id
+  
   User:
     type: object
     properties:
@@ -294,6 +343,18 @@ definitions:
       deletedAt:
         type: ['string', 'null']
   
+  GetSalesforceSessionResponse:
+    properties:
+      sessions:
+        type: array
+        items:
+          type: object
+          
+  SalesforceSessionResponse:
+    properties:
+      sessions:
+        type: object
+          
   GetUsersResponse:
     required:
       - users
